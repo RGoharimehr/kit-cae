@@ -7,7 +7,17 @@ This repository contains the source code for the Omniverse extensions developed 
 
 ## Getting Started
 
-To try out the sample, first clone or check out the source code, then build it using the following steps.
+To try out the sample, first clone or check out the source code **with submodules**, then build it
+using the following steps.
+
+> **Note:** This repository includes the
+> [webrtc-react](https://github.com/RGoharimehr/webrtc-react) webapp as a Git submodule under
+> `webapp/webrtc-react/`. Always clone with `--recurse-submodules` (or run
+> `git submodule update --init --recursive` after cloning) to fetch the webapp source.
+
+```sh
+git clone --recurse-submodules https://github.com/RGoharimehr/kit-cae
+```
 
 **On Windows:**
 
@@ -104,6 +114,69 @@ repo.bat launch -n omni.cae_vtk.kit -- --/exts/omni.kit.pipapi/archiveDirs=[C:/t
 This step is only needed when launching for the first time (or after a cache cleanup). The necessary packages are then
 installed in the local cache using the package archives from the directory you provide. No online pip index is used, so
 all required package archives must be available in the specified directory.
+
+## Streaming with the WebRTC React Webapp
+
+Kit-CAE includes the [webrtc-react](https://github.com/RGoharimehr/webrtc-react) webapp as a Git
+submodule under `webapp/webrtc-react/`. This webapp serves as the browser-based interface when
+running the Kit-CAE streaming application.
+
+### Prerequisites
+
+* [Node.js](https://nodejs.org/) (includes `npm`) must be installed.
+* The webapp submodule must be initialised (see [Getting Started](#getting-started)).
+
+### One-command streaming launch
+
+The convenience scripts below start both the Kit streaming server and the webapp with a single
+command. A browser tab pointing to `http://localhost:3000` is opened automatically.
+
+**On Linux:**
+
+```sh
+./launch_streaming.sh
+```
+
+**On Windows:**
+
+```bat
+launch_streaming.bat
+```
+
+Both scripts perform the following steps automatically:
+
+1. Initialise the `webapp/webrtc-react` submodule if not yet present.
+2. Run `npm install` in the webapp directory.
+3. Start the React dev server (`npm start`) in the background / a separate window.
+4. Open `http://localhost:3000` in the default browser.
+5. Launch the Kit streaming application (`omni.cae_streaming.kit`).
+6. Shut down the dev server once Kit exits.
+
+Extra arguments can be forwarded to the Kit application by appending `--` followed by the desired
+flags:
+
+```sh
+# On Linux
+./launch_streaming.sh -- --/some/kit/setting=value
+
+# On Windows
+launch_streaming.bat -- --/some/kit/setting=value
+```
+
+### Manual launch
+
+If you prefer to start each component separately:
+
+```sh
+# 1. Start the webapp dev server
+cd webapp/webrtc-react
+npm install
+npm start            # listens on http://localhost:3000
+
+# 2. In a separate terminal, start the Kit streaming application
+./repo.sh launch -n omni.cae_streaming.kit   # Linux
+repo.bat  launch -n omni.cae_streaming.kit   # Windows
+```
 
 ## Users Guide
 
