@@ -26,7 +26,8 @@ SETLOCAL ENABLEDELAYEDEXPANSION
 
 set SCRIPT_DIR=%~dp0
 set WEBAPP_DIR=%SCRIPT_DIR%webapp\webrtc-react
-set WEBAPP_PORT=3000
+rem Port is set in webapp\webrtc-react\.env (PORT=3001)
+set WEBAPP_PORT=3001
 
 rem ---------------------------------------------------------------------------
 rem 1. Ensure the webrtc-react submodule is initialised
@@ -55,6 +56,16 @@ where npm >nul 2>&1
 if %errorlevel% neq 0 (
     echo [launch_streaming] ERROR: 'npm' was not found. Please install Node.js.
     exit /b 1
+)
+
+rem The webapp's 'npm start' also launches the flownex-bridge Python server via
+rem concurrently (see flownex-bridge/requirements.txt: fastapi, uvicorn).
+rem Warn the user early if Python is missing.
+where python >nul 2>&1
+if %errorlevel% neq 0 (
+    echo [launch_streaming] WARNING: Python was not found. The flownex-bridge server
+    echo   ^(started by 'npm start'^) requires Python with fastapi and uvicorn installed.
+    echo   Install: pip install fastapi "uvicorn[standard]"
 )
 
 echo [launch_streaming] Installing webapp dependencies...

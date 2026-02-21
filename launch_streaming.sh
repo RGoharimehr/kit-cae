@@ -26,7 +26,8 @@ set -e
 
 SCRIPT_DIR="$( cd "$(dirname "$0")" ; pwd -P )"
 WEBAPP_DIR="${SCRIPT_DIR}/webapp/webrtc-react"
-WEBAPP_PORT=3000
+# Port is set in webapp/webrtc-react/.env (PORT=3001)
+WEBAPP_PORT=3001
 
 # ---------------------------------------------------------------------------
 # 1. Ensure the webrtc-react submodule is initialised
@@ -54,6 +55,15 @@ fi
 if ! command -v npm &> /dev/null; then
     echo "[launch_streaming] ERROR: 'npm' was not found. Please install Node.js." >&2
     exit 1
+fi
+
+# The webapp's 'npm start' also launches the flownex-bridge Python server via
+# concurrently (see flownex-bridge/requirements.txt: fastapi, uvicorn).
+# Warn the user early if Python or uvicorn is missing.
+if ! command -v python &> /dev/null && ! command -v python3 &> /dev/null; then
+    echo "[launch_streaming] WARNING: Python was not found. The flownex-bridge server" >&2
+    echo "  (started by 'npm start') requires Python with fastapi and uvicorn installed." >&2
+    echo "  Install: pip install fastapi 'uvicorn[standard]'" >&2
 fi
 
 echo "[launch_streaming] Installing webapp dependencies..."

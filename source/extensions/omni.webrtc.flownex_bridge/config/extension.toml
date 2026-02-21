@@ -1,0 +1,25 @@
+[package]
+title       = "Flownex WebRTC Bridge"
+description = "Handles get_prim_property / prim_property_result messaging between the web dashboard and the USD stage."
+version     = "1.0.0"
+authors     = ["Flownex Bridge Team"]
+category    = "Simulation"
+keywords    = ["flownex", "webrtc", "usd", "messaging"]
+
+# Core Kit dependencies (required)
+[dependencies]
+"omni.kit.usd" = {}
+"omni.kit.app" = {}
+
+# Optional messaging backends — the extension probes for each at runtime
+# and uses whichever is available.  No hard requirement on either.
+#
+#   Kit 105+  → omni.services.streaming.manager
+#   Kit ≤ 104 → omni.kit.livestream.messaging
+#
+# If you are exclusively targeting Kit 105+, you may uncomment the line
+# below to make Kit validate the dependency at load time:
+#   "omni.services.streaming.manager" = {}
+
+[[python.module]]
+name = "omni.webrtc.flownex_bridge"

@@ -121,15 +121,27 @@ Kit-CAE includes the [webrtc-react](https://github.com/RGoharimehr/webrtc-react)
 submodule under `webapp/webrtc-react/`. This webapp serves as the browser-based interface when
 running the Kit-CAE streaming application.
 
+The project also ships with the `omni.webrtc.flownex_bridge` Omniverse Kit extension
+(under `source/extensions/`), which bridges the web dashboard and the USD stage via the
+Omniverse streaming messaging channel.
+
 ### Prerequisites
 
-* [Node.js](https://nodejs.org/) (includes `npm`) must be installed.
+* [Node.js](https://nodejs.org/) 18+ (includes `npm`) must be installed.
+* Python 3.9+ with the bridge server dependencies:
+
+  ```sh
+  pip install fastapi "uvicorn[standard]"
+  ```
+
+  `npm start` uses `concurrently` to launch both the React dev server and the Python
+  `flownex-bridge` server together.
 * The webapp submodule must be initialised (see [Getting Started](#getting-started)).
 
 ### One-command streaming launch
 
 The convenience scripts below start both the Kit streaming server and the webapp with a single
-command. A browser tab pointing to `http://localhost:3000` is opened automatically.
+command. A browser tab pointing to `http://localhost:3001` is opened automatically.
 
 **On Linux:**
 
@@ -147,8 +159,8 @@ Both scripts perform the following steps automatically:
 
 1. Initialise the `webapp/webrtc-react` submodule if not yet present.
 2. Run `npm install` in the webapp directory.
-3. Start the React dev server (`npm start`) in the background / a separate window.
-4. Open `http://localhost:3000` in the default browser.
+3. Start `npm start` (React dev server on port **3001** + flownex-bridge on port **8001**).
+4. Open `http://localhost:3001` in the default browser.
 5. Launch the Kit streaming application (`omni.cae_streaming.kit`).
 6. Shut down the dev server once Kit exits.
 
@@ -168,10 +180,10 @@ launch_streaming.bat -- --/some/kit/setting=value
 If you prefer to start each component separately:
 
 ```sh
-# 1. Start the webapp dev server
+# 1. Install deps and start the webapp (React on :3001 + flownex-bridge on :8001)
 cd webapp/webrtc-react
 npm install
-npm start            # listens on http://localhost:3000
+npm start
 
 # 2. In a separate terminal, start the Kit streaming application
 ./repo.sh launch -n omni.cae_streaming.kit   # Linux
