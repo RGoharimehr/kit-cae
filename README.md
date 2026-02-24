@@ -137,29 +137,43 @@ repo.bat launch -n omni.cae_vtk.kit
 
 ### Streaming with WebRTC React Webapp
 
+> **Which app initiates WebRTC?**
+> **`omni.cae_streaming.kit`** is the only Kit application that starts the WebRTC server.
+> It depends on `omni.kit.livestream.app`, which loads the WebRTC signaling engine
+> (`omni.kit.livestream.webrtc`) on port **49100**.
+> The other two apps (`omni.cae.kit`, `omni.cae_vtk.kit`) are desktop-only and do **not** start WebRTC.
+
 Kit-CAE ships a streaming configuration (`omni.cae_streaming.kit`) that streams the 3D viewport over WebRTC to the **[webrtc-react](https://github.com/RGoharimehr/webrtc-react)** web dashboard. This is the recommended way to interact with Kit-CAE remotely or embed it in a browser-based workflow.
 
 #### How It Works
 
 ```
-┌─────────────────────────────────────────┐   WebRTC stream
-│  Kit-CAE Streaming Application          │◄──────────────────┐
-│  omni.cae_streaming.kit                 │                   │
-│  ├─ omni.kit.livestream.webrtc (:49100) │◄──────┐           │
-│  └─ omni.webrtc.flownex_bridge          │       │           │
-│     (USD ↔ web messaging)               │       │           │
-└─────────────────────────────────────────┘       │           │
-                                                  │ signaling │ video
-┌─────────────────────────────────────────┐       │           │
-│  Browser  http://localhost:3001         │───────┘           │
-│  React app (webrtc-react)               │───────────────────┘
-└──────────────────┬──────────────────────┘
-                   │ REST (port 8001)
-┌──────────────────▼──────────────────────┐
-│  flownex-bridge (Python / FastAPI)      │
-│  Bridges web UI ↔ external CAD data     │
-└─────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────┐
+│  omni.cae_streaming.kit  ◄── THE WEBRTC APP             │
+│  (this is the ONLY Kit app that starts WebRTC)          │
+│                                                         │
+│  dependencies:                                          │
+│    omni.cae               — all CAE extensions          │
+│    omni.kit.livestream.app                              │
+│      └─ omni.kit.livestream.webrtc  (port 49100)        │
+└───────────────────┬─────────────────────────────────────┘
+                    │ WebRTC  (video + signaling :49100)
+┌───────────────────▼─────────────────────────────────────┐
+│  Browser  http://localhost:3001                         │
+│  React app  (webapp/webrtc-react)                       │
+└───────────────────┬─────────────────────────────────────┘
+                    │ REST (port 8001)
+┌───────────────────▼─────────────────────────────────────┐
+│  flownex-bridge  (Python / FastAPI)                     │
+│  Bridges web UI ↔ external simulation data              │
+└─────────────────────────────────────────────────────────┘
 ```
+
+| App | WebRTC? | Launch command |
+|---|---|---|
+| `omni.cae.kit` | ✗ No | `./repo.sh launch -n omni.cae.kit` |
+| `omni.cae_vtk.kit` | ✗ No | `./repo.sh launch -n omni.cae_vtk.kit` |
+| **`omni.cae_streaming.kit`** | **✓ Yes** | `./repo.sh launch -n omni.cae_streaming.kit` |
 
 | Service | Port | Description |
 |---|---|---|

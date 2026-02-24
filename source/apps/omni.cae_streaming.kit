@@ -8,6 +8,29 @@
 # without an express license agreement from NVIDIA CORPORATION or
 # its affiliates is strictly prohibited.
 
+################################################################################
+# THIS IS THE APP THAT INITIATES WEBRTC STREAMING
+# ─────────────────────────────────────────────────
+# omni.cae_streaming.kit is the Kit application responsible for starting the
+# WebRTC server.  It extends the standard desktop app (omni.cae) by adding the
+# omni.kit.livestream.app dependency, which in turn loads:
+#
+#   omni.kit.livestream.core     — session management
+#   omni.kit.livestream.webrtc   — WebRTC signaling server (port 49100)
+#
+# The other two app files do NOT start WebRTC:
+#   omni.cae.kit         → desktop editor only (no livestream dependency)
+#   omni.cae_vtk.kit     → VTK-enabled desktop editor (no livestream dependency)
+#
+# To start the full streaming stack (Kit + React webapp) use:
+#   Linux:   ./launch_streaming.sh
+#   Windows: launch_streaming.bat
+#
+# To start Kit alone:
+#   Linux:   ./repo.sh launch -n omni.cae_streaming.kit
+#   Windows: repo.bat  launch -n omni.cae_streaming.kit
+################################################################################
+
 [package]
 title = "Omni CAE Editor Streaming"
 version = "1.5.0"
