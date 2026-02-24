@@ -6,20 +6,10 @@ authors     = ["Flownex Bridge Team"]
 category    = "Simulation"
 keywords    = ["flownex", "webrtc", "usd", "messaging"]
 
-# Core Kit dependencies (required)
-[dependencies]
-"omni.kit.usd" = {}
-"omni.kit.app" = {}
-
-# Optional messaging backends — the extension probes for each at runtime
-# and uses whichever is available.  No hard requirement on either.
-#
-#   Kit 105+  → omni.services.streaming.manager
-#   Kit ≤ 104 → omni.kit.livestream.messaging
-#
-# If you are exclusively targeting Kit 105+, you may uncomment the line
-# below to make Kit validate the dependency at load time:
-#   "omni.services.streaming.manager" = {}
+# No external registry dependencies.
+# omni.kit.app and omni.kit.usd are Kit built-ins always present at runtime.
+# The messaging backends (omni.services.streaming.manager / omni.kit.livestream.messaging)
+# are also probed at runtime via try/except — no hard dependency needed here.
 
 [[python.module]]
 name = "omni.webrtc.flownex_bridge"
