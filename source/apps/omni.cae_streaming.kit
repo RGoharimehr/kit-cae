@@ -60,10 +60,12 @@ window.width = 1920
 rtx.post.aa.op = 3
 rtx.verifyDriverVersion.enabled = false
 rtx-transient.dlssg.enabled = false  # Disable DLSS otherwise it can push the framerate above the locked limit
-# Auto-start the webrtc-react webapp when Kit launches.
-# omni.cae.streaming_webapp is a local extension built by repo.bat build.
-# Using exts.enabled avoids registry resolution (it loads from the local exts folder).
-exts."omni.cae.streaming_webapp".enabled = true
+
+[settings.app.exts]
+# Auto-load omni.cae.streaming_webapp after repo.bat build.
+# Uses enabled.'++' (appends to the version-lock list) so Kit finds it in
+# _build/.../exts/ without triggering a registry lookup.
+enabled.'++' = ["omni.cae.streaming_webapp-1.0.0"]
 
 [settings.app.extensions]
 registryEnabled = true
