@@ -40,3 +40,8 @@ deps/**/user.toml
 /logs
 
 data/*.usda
+
+# WebRTC React webapp build artifacts
+webapp/webrtc-react/node_modules/
+webapp/webrtc-react/build/
+webapp/webrtc-react/dist/

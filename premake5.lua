@@ -39,6 +39,12 @@ repo_build.prebuild_copy {
     {"%{root}/tpl_licenses/**", "%{root}/_build/PACKAGE-LICENSES/kit-cae/"}
 }
 
+-- Copy start_webapp.py to the build apps folder so ${app}/start_webapp.py resolves at launch time.
+-- (define_app links the .kit file to _build/.../apps/; this ensures the .py file lands there too.)
+repo_build.prebuild_copy {
+    { "%{root}/source/apps/start_webapp.py", "%{root}/_build/%{platform}/%{config}/apps/start_webapp.py" },
+}
+
 -- Apps: for each app generate batch files and a project based on kit files (e.g. my_name.my_app.kit)
 define_app("omni.cae.kit")
 define_app("omni.cae_vtk.kit")

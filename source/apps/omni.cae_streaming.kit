@@ -8,6 +8,25 @@
 # without an express license agreement from NVIDIA CORPORATION or
 # its affiliates is strictly prohibited.
 
+################################################################################
+# THIS IS THE APP THAT INITIATES WEBRTC STREAMING
+# ─────────────────────────────────────────────────
+# omni.cae_streaming.kit starts the WebRTC server AND the React webapp.
+#
+#   omni.kit.livestream.app → omni.kit.livestream.webrtc (port 49100)
+#     WebRTC signaling server
+#
+#   start_webapp.py  (${app}/start_webapp.py)
+#     Plain Python startup script — no extension, no registry lookup.
+#     Runs inside Kit at startup; starts "npm start" in the background,
+#     waits for port 3001, then opens the browser automatically.
+#
+# LAUNCH COMMAND
+# ─────────────────────────────────────────────────
+#   Linux:   ./repo.sh launch -n omni.cae_streaming.kit
+#   Windows: repo.bat  launch -n omni.cae_streaming.kit
+################################################################################
+
 [package]
 title = "Omni CAE Editor Streaming"
 version = "1.5.0"
@@ -32,6 +51,11 @@ window.width = 1920
 rtx.post.aa.op = 3
 rtx.verifyDriverVersion.enabled = false
 rtx-transient.dlssg.enabled = false  # Disable DLSS otherwise it can push the framerate above the locked limit
+
+[settings.app.python]
+# Run start_webapp.py at Kit startup — starts the React webapp and opens the browser.
+# This is a plain Python script; no extension, no build step, no registry lookup.
+scripts.'++' = ["${app}/start_webapp.py"]
 
 [settings.app.extensions]
 registryEnabled = true
