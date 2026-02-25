@@ -17,20 +17,21 @@
 #   omni.kit.livestream.app         — loads the WebRTC streaming stack
 #     └─ omni.kit.livestream.webrtc — WebRTC signaling server (port 49100)
 #
-#   omni.cae.streaming_webapp       — local extension that auto-starts the
-#                                     webrtc-react webapp (port 3001) and
-#                                     opens the browser automatically.
+#   omni.cae.streaming_webapp       — local extension (built by repo.bat build)
+#                                     that auto-starts the webrtc-react webapp
+#                                     (port 3001) and opens the browser.
+#                                     Loaded via settings (not dependencies) to
+#                                     avoid registry resolution failures.
 #
 # LAUNCH COMMANDS
 # ─────────────────────────────────────────────────
-# Recommended (starts Kit + webapp together):
+# After running `repo.bat build` once:
 #   Linux:   ./repo.sh launch -n omni.cae_streaming.kit
 #   Windows: repo.bat  launch -n omni.cae_streaming.kit
+#   → Kit starts, omni.cae.streaming_webapp auto-launches the React webapp,
+#     and the browser opens to http://localhost:3001.
 #
-#   The omni.cae.streaming_webapp extension will automatically start
-#   the React webapp and open the browser.
-#
-# Alternative one-liner scripts (also handle submodule init + npm install):
+# First-run / without a rebuild (handles submodule init + npm install):
 #   Linux:   ./launch_streaming.sh
 #   Windows: launch_streaming.bat
 ################################################################################
@@ -46,9 +47,6 @@ template_name = "omni.streaming_configuration"
 "omni.cae" = {}  # Application kit file
 # Streaming and messaging functionality
 "omni.kit.livestream.app" = {}
-# Auto-starts the webrtc-react webapp (port 3001) when Kit launches.
-# This is a local extension in source/extensions/ — no registry entry needed.
-"omni.cae.streaming_webapp" = {}
 
 [settings.app]
 fastShutdown = true
@@ -62,6 +60,10 @@ window.width = 1920
 rtx.post.aa.op = 3
 rtx.verifyDriverVersion.enabled = false
 rtx-transient.dlssg.enabled = false  # Disable DLSS otherwise it can push the framerate above the locked limit
+# Auto-start the webrtc-react webapp when Kit launches.
+# omni.cae.streaming_webapp is a local extension built by repo.bat build.
+# Using exts.enabled avoids registry resolution (it loads from the local exts folder).
+exts."omni.cae.streaming_webapp".enabled = true
 
 [settings.app.extensions]
 registryEnabled = true
