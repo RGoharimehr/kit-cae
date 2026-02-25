@@ -17,16 +17,47 @@ This directory hosts the [webrtc-react](https://github.com/RGoharimehr/webrtc-re
 as a Git submodule. It provides the browser-based interface for connecting to the Kit-CAE
 streaming session via WebRTC.
 
+## Submodule verification
+
+After running setup, verify the submodule is populated:
+
+```sh
+git submodule status
+# Expected (no leading '-'): b0c8410... webapp/webrtc-react (heads/Omnicool-WebApp)
+ls webapp/webrtc-react/package.json   # must exist
+```
+
+A leading `-` before the commit hash means the submodule is still not initialized — re-run `setup.bat` / `./setup.sh`.
+
 ## What's included
 
-| Component | Description |
-|---|---|
-| React app (`src/`) | Browser UI that connects to the Kit WebRTC stream |
-| `flownex-bridge/` | Python FastAPI server (port 8001) that bridges Kit USD data to the web UI |
-| `omniverse-kit-extension/` | Omniverse Kit extension code (already integrated into kit-cae as `omni.webrtc.flownex_bridge`) |
+| Component | Port | Description |
+|---|---|---|
+| React app (`src/`) | **3001** | Browser UI that connects to the Kit WebRTC stream |
+| `flownex-bridge/` | **8001** | Python FastAPI server bridging Kit USD data to the web UI |
+| `stream.config.json` | — | WebRTC signaling configuration (Kit server address) |
 
-The React dev server listens on **port 3001**.  
 The Kit WebRTC signalling server listens on **port 49100**.
+
+## Configuring the Kit server address
+
+The webapp connects to Kit using settings in `webapp/webrtc-react/stream.config.json`:
+
+```json
+"local": {
+    "server": "127.0.0.1",
+    "signalingPort": 49100,
+    "mediaPort": null
+}
+```
+
+| Setting | Default | Change when… |
+|---|---|---|
+| `server` | `127.0.0.1` | Kit is running on a **different machine** — set to that machine's IP |
+| `signalingPort` | `49100` | Kit's WebRTC signaling port was changed |
+
+> **Note:** The `.env` file contains `REACT_APP_OV_SIGNAL_HOST` — this variable is **not read by the app**.
+> The only place that controls the Kit server address is `stream.config.json`.
 
 ## First-time setup
 
