@@ -11,29 +11,20 @@
 ################################################################################
 # THIS IS THE APP THAT INITIATES WEBRTC STREAMING
 # ─────────────────────────────────────────────────
-# omni.cae_streaming.kit is the Kit application responsible for starting the
-# WebRTC server.  It extends the standard desktop app (omni.cae) by adding:
+# omni.cae_streaming.kit starts the WebRTC server AND the React webapp.
 #
-#   omni.kit.livestream.app         — loads the WebRTC streaming stack
-#     └─ omni.kit.livestream.webrtc — WebRTC signaling server (port 49100)
+#   omni.kit.livestream.app → omni.kit.livestream.webrtc (port 49100)
+#     WebRTC signaling server
 #
-#   omni.cae.streaming_webapp       — local extension (built by repo.bat build)
-#                                     that auto-starts the webrtc-react webapp
-#                                     (port 3001) and opens the browser.
-#                                     Loaded via settings (not dependencies) to
-#                                     avoid registry resolution failures.
+#   start_webapp.py  (${app}/start_webapp.py)
+#     Plain Python startup script — no extension, no registry lookup.
+#     Runs inside Kit at startup; starts "npm start" in the background,
+#     waits for port 3001, then opens the browser automatically.
 #
-# LAUNCH COMMANDS
+# LAUNCH COMMAND
 # ─────────────────────────────────────────────────
-# After running `repo.bat build` once:
 #   Linux:   ./repo.sh launch -n omni.cae_streaming.kit
 #   Windows: repo.bat  launch -n omni.cae_streaming.kit
-#   → Kit starts, omni.cae.streaming_webapp auto-launches the React webapp,
-#     and the browser opens to http://localhost:3001.
-#
-# First-run / without a rebuild (handles submodule init + npm install):
-#   Linux:   ./launch_streaming.sh
-#   Windows: launch_streaming.bat
 ################################################################################
 
 [package]
@@ -61,11 +52,10 @@ rtx.post.aa.op = 3
 rtx.verifyDriverVersion.enabled = false
 rtx-transient.dlssg.enabled = false  # Disable DLSS otherwise it can push the framerate above the locked limit
 
-[settings.app.exts]
-# Auto-load omni.cae.streaming_webapp after repo.bat build.
-# Uses enabled.'++' (appends to the version-lock list) so Kit finds it in
-# _build/.../exts/ without triggering a registry lookup.
-enabled.'++' = ["omni.cae.streaming_webapp-1.0.0"]
+[settings.app.python]
+# Run start_webapp.py at Kit startup — starts the React webapp and opens the browser.
+# This is a plain Python script; no extension, no build step, no registry lookup.
+scripts.'++' = ["${app}/start_webapp.py"]
 
 [settings.app.extensions]
 registryEnabled = true
