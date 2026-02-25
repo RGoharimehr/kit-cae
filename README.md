@@ -52,18 +52,41 @@ Kit-CAE is an NVIDIA Omniverse sample application that demonstrates **Computer-A
 
 ## Getting Started — First Clone
 
-This repository uses a **Git submodule** for the WebRTC React webapp. Always clone with `--recurse-submodules`:
+> **`webapp/webrtc-react` is empty?**
+> This is normal if you cloned without `--recurse-submodules`.
+> Run the one-step setup script to populate it:
+> ```
+> # Windows
+> setup.bat
+>
+> # Linux
+> ./setup.sh
+> ```
+
+This repository uses a **Git submodule** for the WebRTC React webapp under `webapp/webrtc-react/`.
+The simplest way to get everything in one go:
 
 ```sh
+# Linux / macOS
+git clone --recurse-submodules https://github.com/RGoharimehr/kit-cae
+cd kit-cae
+
+# Windows
 git clone --recurse-submodules https://github.com/RGoharimehr/kit-cae
 cd kit-cae
 ```
 
-If you have already cloned without the flag, initialise the submodule manually:
+**Already cloned without `--recurse-submodules`?** Run the setup script once:
 
 ```sh
-git submodule update --init --recursive
+# Windows — double-click or run in any terminal
+setup.bat
+
+# Linux
+./setup.sh
 ```
+
+Both scripts run `git submodule update --init --recursive` and print next-step instructions.
 
 ---
 

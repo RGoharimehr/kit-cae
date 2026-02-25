@@ -1,5 +1,18 @@
 # WebRTC React Webapp
 
+> **This directory is a Git submodule.**
+> If `webrtc-react/` is **empty**, run the setup script from the repository root:
+>
+> ```
+> # Windows — open a terminal at the repo root and run:
+> setup.bat
+>
+> # Linux
+> ./setup.sh
+> ```
+>
+> Or manually: `git submodule update --init --recursive`
+
 This directory hosts the [webrtc-react](https://github.com/RGoharimehr/webrtc-react) web frontend
 as a Git submodule. It provides the browser-based interface for connecting to the Kit-CAE
 streaming session via WebRTC.
