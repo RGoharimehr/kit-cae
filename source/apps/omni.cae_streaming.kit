@@ -12,23 +12,27 @@
 # THIS IS THE APP THAT INITIATES WEBRTC STREAMING
 # ─────────────────────────────────────────────────
 # omni.cae_streaming.kit is the Kit application responsible for starting the
-# WebRTC server.  It extends the standard desktop app (omni.cae) by adding the
-# omni.kit.livestream.app dependency, which in turn loads:
+# WebRTC server.  It extends the standard desktop app (omni.cae) by adding:
 #
-#   omni.kit.livestream.core     — session management
-#   omni.kit.livestream.webrtc   — WebRTC signaling server (port 49100)
+#   omni.kit.livestream.app         — loads the WebRTC streaming stack
+#     └─ omni.kit.livestream.webrtc — WebRTC signaling server (port 49100)
 #
-# The other two app files do NOT start WebRTC:
-#   omni.cae.kit         → desktop editor only (no livestream dependency)
-#   omni.cae_vtk.kit     → VTK-enabled desktop editor (no livestream dependency)
+#   omni.cae.streaming_webapp       — local extension that auto-starts the
+#                                     webrtc-react webapp (port 3001) and
+#                                     opens the browser automatically.
 #
-# To start the full streaming stack (Kit + React webapp) use:
-#   Linux:   ./launch_streaming.sh
-#   Windows: launch_streaming.bat
-#
-# To start Kit alone:
+# LAUNCH COMMANDS
+# ─────────────────────────────────────────────────
+# Recommended (starts Kit + webapp together):
 #   Linux:   ./repo.sh launch -n omni.cae_streaming.kit
 #   Windows: repo.bat  launch -n omni.cae_streaming.kit
+#
+#   The omni.cae.streaming_webapp extension will automatically start
+#   the React webapp and open the browser.
+#
+# Alternative one-liner scripts (also handle submodule init + npm install):
+#   Linux:   ./launch_streaming.sh
+#   Windows: launch_streaming.bat
 ################################################################################
 
 [package]
@@ -42,6 +46,9 @@ template_name = "omni.streaming_configuration"
 "omni.cae" = {}  # Application kit file
 # Streaming and messaging functionality
 "omni.kit.livestream.app" = {}
+# Auto-starts the webrtc-react webapp (port 3001) when Kit launches.
+# This is a local extension in source/extensions/ — no registry entry needed.
+"omni.cae.streaming_webapp" = {}
 
 [settings.app]
 fastShutdown = true

@@ -160,63 +160,55 @@ repo.bat launch -n omni.cae_vtk.kit
 
 ### Streaming with WebRTC React Webapp
 
-> **Which app initiates WebRTC?**
-> **`omni.cae_streaming.kit`** is the only Kit application that starts the WebRTC server.
-> It depends on `omni.kit.livestream.app`, which loads the WebRTC signaling engine
-> (`omni.kit.livestream.webrtc`) on port **49100**.
-> The other two apps (`omni.cae.kit`, `omni.cae_vtk.kit`) are desktop-only and do **not** start WebRTC.
+Kit-CAE ships a streaming configuration (`omni.cae_streaming.kit`) that streams the 3D viewport over WebRTC to the **[webrtc-react](https://github.com/RGoharimehr/webrtc-react)** web dashboard. This is the only Kit app that starts the WebRTC server — the other two apps (`omni.cae.kit`, `omni.cae_vtk.kit`) are desktop-only.
 
-Kit-CAE ships a streaming configuration (`omni.cae_streaming.kit`) that streams the 3D viewport over WebRTC to the **[webrtc-react](https://github.com/RGoharimehr/webrtc-react)** web dashboard. This is the recommended way to interact with Kit-CAE remotely or embed it in a browser-based workflow.
+#### How to Launch (standard command)
+
+```sh
+# Linux
+./repo.sh launch -n omni.cae_streaming.kit
+
+# Windows
+repo.bat launch -n omni.cae_streaming.kit
+```
+
+**This single command starts everything automatically:**
+- Kit opens and begins streaming on port **49100**
+- The `omni.cae.streaming_webapp` extension starts the React dev server (`npm start`) on port **3001**
+- Your default browser opens to `http://localhost:3001`
+
+#### Prerequisites
+
+1. First-time only: run `setup.bat` / `./setup.sh` to populate `webapp/webrtc-react/` (see [Getting Started](#getting-started--first-clone))
+2. [Node.js 18+](https://nodejs.org/) must be installed
 
 #### How It Works
 
 ```
+  repo.bat launch -n omni.cae_streaming.kit
+            │
+            ▼
 ┌─────────────────────────────────────────────────────────┐
-│  omni.cae_streaming.kit  ◄── THE WEBRTC APP             │
-│  (this is the ONLY Kit app that starts WebRTC)          │
-│                                                         │
-│  dependencies:                                          │
-│    omni.cae               — all CAE extensions          │
-│    omni.kit.livestream.app                              │
-│      └─ omni.kit.livestream.webrtc  (port 49100)        │
+│  omni.cae_streaming.kit                                 │
+│  ├─ omni.kit.livestream.webrtc  →  WebRTC  port 49100   │
+│  └─ omni.cae.streaming_webapp   →  starts npm start     │
+│                                     opens browser        │
 └───────────────────┬─────────────────────────────────────┘
-                    │ WebRTC  (video + signaling :49100)
+                    │ WebRTC video + signaling
 ┌───────────────────▼─────────────────────────────────────┐
-│  Browser  http://localhost:3001                         │
-│  React app  (webapp/webrtc-react)                       │
-└───────────────────┬─────────────────────────────────────┘
-                    │ REST (port 8001)
-┌───────────────────▼─────────────────────────────────────┐
-│  flownex-bridge  (Python / FastAPI)                     │
-│  Bridges web UI ↔ external simulation data              │
+│  Browser  http://localhost:3001  (React webapp)          │
 └─────────────────────────────────────────────────────────┘
 ```
 
-| App | WebRTC? | Launch command |
+| Service | Port | Who starts it |
 |---|---|---|
-| `omni.cae.kit` | ✗ No | `./repo.sh launch -n omni.cae.kit` |
-| `omni.cae_vtk.kit` | ✗ No | `./repo.sh launch -n omni.cae_vtk.kit` |
-| **`omni.cae_streaming.kit`** | **✓ Yes** | `./repo.sh launch -n omni.cae_streaming.kit` |
+| Kit WebRTC signaling | **49100** | `omni.kit.livestream.webrtc` |
+| React dev server | **3001** | `omni.cae.streaming_webapp` extension |
+| flownex-bridge | **8001** | `npm start` (via `concurrently` inside the webapp) |
 
-| Service | Port | Description |
-|---|---|---|
-| React dev server | **3001** | Browser UI |
-| flownex-bridge | **8001** | Python REST bridge |
-| WebRTC signaling | **49100** | Kit livestream server |
+#### Alternative: launch_streaming scripts
 
-#### Prerequisites
-
-1. The `webapp/webrtc-react` submodule is initialised (see [Getting Started](#getting-started--first-clone)).
-2. [Node.js 18+](https://nodejs.org/) is installed.
-3. Python 3.9+ with bridge dependencies:
-
-   ```sh
-   pip install fastapi "uvicorn[standard]"
-   ```
-
-#### One-Command Launch
-
-A single convenience script starts every component — submodule init, `npm install`, React dev server, Python bridge, browser tab, and Kit — in the correct order:
+The `launch_streaming.bat` / `launch_streaming.sh` scripts at the repo root do the same job but also handle submodule init and `npm install` before launching Kit:
 
 ```sh
 # Linux
@@ -226,7 +218,7 @@ A single convenience script starts every component — submodule init, `npm inst
 launch_streaming.bat
 ```
 
-The browser opens automatically at `http://localhost:3001` once the dev server is ready.
+Use these scripts if you need the extra safety net (e.g. first run on a fresh clone before the submodule is initialised).
 
 Pass extra Kit arguments after `--`:
 
